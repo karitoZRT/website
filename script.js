@@ -47,31 +47,30 @@ navLinks.forEach(function(link) {
 async function loadGitHubActivity() {
 
     let username = "karitoZRT";
-    let repositoryName = "website";
-
-    let repoUrl = "https://api.github.com/users/" + username + "/repos?per_page=100";
-    let commitsUrl = "https://api.github.com/repos/" + username + "/" + repositoryName + "/commits?author=" + username + "&per_page=100";
-
+    let repoUrl = "https://api.github.com/users/" + username + "/repos?per_page=100&sort=updated";
     let commitList = document.getElementById("commitList");
 
     try {
         let repoResponse = await fetch(repoUrl);
-        let commitsResponse = await fetch(commitsUrl);
-
-        if (!repoResponse.ok || !commitsResponse.ok) {
-            commitList.textContent = "Unable to retrieve GitHub data.";
+        if (!repoResponse.ok) {
+            commitList.textContent = "Unable to retrieve GitHub repositories.";
             return;
         }
-
         let repositories = await repoResponse.json();
-        let commits = await commitsResponse.json();
-
-        document.getElementById("totalCommits").textContent = String(commits.length);
         document.getElementById("totalRepos").textContent = String(repositories.length);
 
-        let activeDays = [];
+        // Get commits from the website repository
+        let websiteResponse = await fetch(
+            "https://api.github.com/repos/" + username + "/website/commits?author=" + username + "&per_page=100"
+        );
+        let websiteCommits = [];
+        if (websiteResponse.ok) {
+            websiteCommits = await websiteResponse.json();
+        }
 
-        commits.forEach(function(commit) {
+        document.getElementById("totalCommits").textContent = String(websiteCommits.length);
+        let activeDays = [];
+        websiteCommits.forEach(function(commit) {
             let date = commit.commit.author.date.substring(0, 10);
 
             if (!activeDays.includes(date)) {
@@ -80,11 +79,38 @@ async function loadGitHubActivity() {
         });
 
         document.getElementById("totalContributions").textContent = String(activeDays.length);
+        // Get recent commits from the 10 most recently updated repositories
+        let recentRepositories = repositories.slice(0, 10);
+        let recentActivity = [];
+
+        for (let i = 0; i < recentRepositories.length; i++) {
+
+            let repository = recentRepositories[i];
+
+            let response = await fetch(
+                "https://api.github.com/repos/" + username + "/" + repository.name + "/commits?author=avxenophontos&per_page=5"
+            );
+            if (response.ok) {
+                let commits = await response.json();
+
+                commits.forEach(function(commit) {
+                    recentActivity.push({
+                        message: commit.commit.message,
+                        repository: repository.name,
+                        date: commit.commit.author.date,
+                        url: commit.html_url
+                    });
+                });
+            }
+        }
+
+        // Sort commits from newest to oldest
+        recentActivity.sort(function(a, b) {
+            return new Date(b.date) - new Date(a.date);
+        });
 
         commitList.innerHTML = "";
-
-        commits.slice(0, 4).forEach(function(commit) {
-
+        recentActivity.slice(0, 4).forEach(function(activity) {
             let item = document.createElement("div");
             item.className = "commitItem";
 
@@ -96,15 +122,15 @@ async function loadGitHubActivity() {
             details.className = "commitDetails";
 
             let message = document.createElement("strong");
-            message.textContent = commit.commit.message.split("\n")[0];
+            message.textContent = activity.message.split("\n")[0];
 
             let repository = document.createElement("p");
-            repository.textContent = repositoryName;
+            repository.textContent = activity.repository;
 
             let link = document.createElement("a");
-            link.href = commit.html_url;
+            link.href = activity.url;
             link.target = "_blank";
-            link.rel = "noOpener noReferrer";
+            link.rel = "noopener noreferrer";
             link.textContent = "View commit ↗";
 
             details.appendChild(message);
@@ -117,8 +143,8 @@ async function loadGitHubActivity() {
             commitList.appendChild(item);
         });
 
-        if (commits.length === 0) {
-            commitList.textContent = "No commits found.";
+        if (recentActivity.length === 0) {
+            commitList.textContent = "No recent commits found in public repositories.";
         }
     }
     catch (error) {
