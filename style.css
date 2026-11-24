@@ -1,0 +1,492 @@
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #000;
+    background-image: radial-gradient(
+            ellipse at 50% 3%,
+            #526d1c 1%,
+            #1b2810 25%,
+            #050805 55%,
+            #000000 100%
+    );
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: white;
+}
+
+#navBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    color: white;
+    border-bottom: 1px solid darkgrey;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profileInfo h3,
+.profileInfo p {
+    margin: 3px;
+}
+
+.navLinks {
+    display: flex;
+    gap: 25px;
+}
+
+.navLinks a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.navLinks a:hover,
+.navLinks a.active {
+    color: yellowgreen;
+}
+
+.navLinks a.active::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: yellowgreen;
+}
+
+#mainPage {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.page {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition:
+            opacity 0.35s ease,
+            transform 0.35s ease,
+            visibility 0s linear 0.35s;
+}
+
+.page.active {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+    transition:
+            opacity 0.35s ease,
+            transform 0.35s ease,
+            visibility 0s;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 0.7fr 1.3fr;
+    gap: 20px;
+    width: 100%;
+}
+
+.introduction {
+    width: 100%;
+    min-height: 394px;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    color: white;
+    background-image: radial-gradient(
+            ellipse at 0% 100%,
+            #526d1c 1%,
+            #1b2810 25%,
+            #1f2b07 50%,
+            #333 100%
+    );
+    box-shadow: 0 0 25px rgba(154, 205, 50, 0.35);
+}
+
+.introButtons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.actionButton {
+    display: inline-block;
+    padding: 12px 22px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.25s ease;
+}
+
+.primaryButton {
+    background-color: yellowgreen;
+    color: #080d07;
+    border: 1px solid yellowgreen;
+}
+
+.primaryButton:hover {
+    background-color: #b5e65a;
+    box-shadow: 0 0 15px rgba(154, 205, 50, 0.45);
+    transform: translateY(-2px);
+}
+
+.secondaryButton {
+    background: transparent;
+    color: yellowgreen;
+    border: 1px solid yellowgreen;
+}
+
+.secondaryButton:hover {
+    background: rgba(154, 205, 50, 0.12);
+    box-shadow: 0 0 12px rgba(154, 205, 50, 0.25);
+    transform: translateY(-2px);
+}
+
+.box {
+    min-height: 250px;
+    padding: 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    color: white;
+    background-color: #333;
+}
+
+.largeBox {
+    grid-column: 1 / 3;
+    min-height: 400px;
+}
+
+.githubBox {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-height: 394px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid rgba(154, 205, 50, 0.5);
+    border-radius: 8px;
+    background: rgba(5, 12, 5, 0.92);
+    box-shadow: 0 0 18px rgba(154, 205, 50, 0.12);
+}
+
+.githubContent {
+    position: relative;
+    z-index: 2;
+    padding: 8px;
+}
+
+.githubHeader {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.githubHeader h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: white;
+    font-size: 19px;
+}
+
+.githubIcon {
+    display: block;
+    width: 23px;
+    height: 23px;
+    min-width: 23px;
+    max-width: 23px;
+    flex: 0 0 23px;
+    fill: white;
+}
+
+.githubStats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 38px;
+    margin-bottom: 20px;
+}
+
+.stat h3 {
+    margin: 0 0 8px;
+    color: yellowgreen;
+    font-size: 25px;
+}
+
+.stat p {
+    margin: 0;
+    color: lightgray;
+    font-size: 14px;
+}
+
+.recentActivity {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(154, 205, 50, 0.2);
+}
+
+.recentActivity h3 {
+    margin: 0 0 18px;
+    color: white;
+    font-size: 16px;
+}
+
+.commitItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.commitIcon {
+    flex-shrink: 0;
+    color: yellowgreen;
+    font-size: 17px;
+}
+
+.commitDetails {
+    min-width: 0;
+}
+
+.commitDetails strong {
+    display: block;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.commitDetails p {
+    margin: 4px 0;
+    color: lightgray;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.commitDetails a {
+    color: yellowgreen;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.commitDetails a:hover,
+.githubLink:hover {
+    color: white;
+}
+
+.loadingText {
+    color: lightgray;
+    font-size: 13px;
+}
+
+.githubLink {
+    display: inline-block;
+    margin-top: 10px;
+    color: yellowgreen;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.circuitTop,
+.circuitBottom {
+    position: absolute;
+    width: 145px;
+    height: 90px;
+    fill: none;
+    stroke: yellowgreen;
+    stroke-width: 1.2;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.circuitTop {
+    top: 0;
+    right: 0;
+}
+
+.circuitBottom {
+    bottom: 0;
+    left: 0;
+}
+
+.circuitTop circle,
+.circuitBottom circle {
+    fill: #080d07;
+    stroke: yellowgreen;
+    stroke-width: 2;
+}
+
+.projectsHeader {
+    margin-bottom: 30px;
+}
+
+.projectsHeader h1 {
+    margin-bottom: 8px;
+    color: yellowgreen;
+    font-size: 32px;
+}
+
+.projectsHeader p {
+    color: lightgray;
+}
+
+.projectsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.projectCard {
+    overflow: hidden;
+    border: 1px solid rgba(154, 205, 50, 0.35);
+    border-radius: 8px;
+    background: rgba(10, 20, 8, 0.85);
+    transition: 0.3s ease;
+}
+
+.projectCard:hover {
+    transform: translateY(-5px);
+    border-color: yellowgreen;
+    box-shadow: 0 5px 20px rgba(154, 205, 50, 0.15);
+}
+
+.projectImage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    background: linear-gradient(135deg, #263c13, #080d07);
+    color: yellowgreen;
+    letter-spacing: 3px;
+    font-size: 13px;
+}
+
+.projectInfo {
+    padding: 20px;
+}
+
+.projectInfo h2 {
+    color: white;
+}
+
+.projectInfo p {
+    color: lightgray;
+    line-height: 1.6;
+}
+
+.projectTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+}
+
+.projectTags span {
+    padding: 5px 10px;
+    border: 1px solid rgba(154, 205, 50, 0.3);
+    border-radius: 4px;
+    background: rgba(154, 205, 50, 0.1);
+    color: yellowgreen;
+    font-size: 12px;
+}
+
+.projectLink {
+    display: inline-block;
+    margin-top: 10px;
+    color: yellowgreen;
+    text-decoration: none;
+}
+
+.projectLink:hover {
+    color: white;
+}
+
+@media (max-width: 900px) {
+    .projectsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .largeBox {
+        grid-column: 1;
+    }
+
+    .introduction,
+    .githubBox {
+        min-height: auto;
+    }
+
+    #navBar {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .navLinks {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
+
+@media (max-width: 600px) {
+    .projectsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .githubStats {
+        gap: 10px;
+    }
+
+    .githubBox {
+        padding: 14px;
+    }
+
+    .githubContent {
+        padding: 4px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page,
+    .page.active,
+    .projectCard,
+    .actionButton {
+        transition: none;
+        transform: none;
+    }
+}
