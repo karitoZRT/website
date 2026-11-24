@@ -1,20 +1,15 @@
 
 let navLinks = document.querySelectorAll(".navLink");
 let pages = document.querySelectorAll(".page");
-let projectButton = document.querySelector(".projectButton");
 
 let projectButtons = document.querySelectorAll('[data-page="projects"]');
-
 projectButtons.forEach(function(button) {
 
     button.onclick = function(event) {
 
         event.preventDefault();
-
         changePage("projects");
-
     };
-
 });
 // Function to change pages
 function changePage(pageName) {
@@ -47,76 +42,48 @@ navLinks.forEach(function(link) {
         let pageName = link.dataset.page;
         changePage(pageName);
     };
-
 });
-
-// Latest Projects button
-projectButton.onclick = function(event) {
-    event.preventDefault();
-    changePage("projects");
-};
-
 
 async function loadGitHubActivity() {
 
     let username = "karitoZRT";
+    let repositoryName = "website";
 
-    let repoUrl = "https://api.github.com/users/" + username + "/repos?per_page=100&sort=updated";
-
-    let eventsUrl = "https://api.github.com/users/" + username + "/events/public?per_page=100";
+    let repoUrl = "https://api.github.com/users/" + username + "/repos?per_page=100";
+    let commitsUrl = "https://api.github.com/repos/" + username + "/" + repositoryName + "/commits?author=" + username + "&per_page=100";
 
     let commitList = document.getElementById("commitList");
 
     try {
-
         let repoResponse = await fetch(repoUrl);
-        let eventsResponse = await fetch(eventsUrl);
+        let commitsResponse = await fetch(commitsUrl);
 
-        if (!repoResponse.ok || !eventsResponse.ok) {
-            new Error("Unable to retrieve GitHub data");
+        if (!repoResponse.ok || !commitsResponse.ok) {
+            commitList.textContent = "Unable to retrieve GitHub data.";
+            return;
         }
 
         let repositories = await repoResponse.json();
-        let events = await eventsResponse.json();
+        let commits = await commitsResponse.json();
 
-        let totalCommits = 0;
+        document.getElementById("totalCommits").textContent = String(commits.length);
+        document.getElementById("totalRepos").textContent = String(repositories.length);
+
         let activeDays = [];
 
-        let recentCommits = [];
-        events.forEach(function(event) {
+        commits.forEach(function(commit) {
+            let date = commit.commit.author.date.substring(0, 10);
 
-            if (event.type === "PushEvent") {
-
-                let commits = event.payload.commits;
-                totalCommits += commits.length;
-
-                let date = event.created_at.substring(0, 10);
-                if (!activeDays.includes(date)) {
-                    activeDays.push(date);
-                }
-
-                commits.forEach(function(commit) {
-
-                    recentCommits.push({
-                        message: commit.message,
-                        repository: event.repo.name,
-                        url: "https://github.com/" +
-                            event.repo.name +
-                            "/commit/" + commit.sha,
-                        date: event.created_at
-                    });
-
-                });
-
+            if (!activeDays.includes(date)) {
+                activeDays.push(date);
             }
-
         });
-        document.getElementById("totalCommits").textContent = totalCommits;
-        document.getElementById("totalRepos").textContent = repositories.length;
-        document.getElementById("totalContributions").textContent = activeDays.length;
+
+        document.getElementById("totalContributions").textContent = String(activeDays.length);
 
         commitList.innerHTML = "";
-        recentCommits.slice(0, 4).forEach(function(commit) {
+
+        commits.slice(0, 4).forEach(function(commit) {
 
             let item = document.createElement("div");
             item.className = "commitItem";
@@ -129,13 +96,13 @@ async function loadGitHubActivity() {
             details.className = "commitDetails";
 
             let message = document.createElement("strong");
-            message.textContent = commit.message.split("\n")[0];
+            message.textContent = commit.commit.message.split("\n")[0];
 
             let repository = document.createElement("p");
-            repository.textContent = commit.repository;
+            repository.textContent = repositoryName;
 
             let link = document.createElement("a");
-            link.href = commit.url;
+            link.href = commit.html_url;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
             link.textContent = "View commit ↗";
@@ -149,8 +116,9 @@ async function loadGitHubActivity() {
 
             commitList.appendChild(item);
         });
-        if (recentCommits.length === 0) {
-            commitList.textContent = "No recent public commits found.";
+
+        if (commits.length === 0) {
+            commitList.textContent = "No commits found.";
         }
     }
     catch (error) {
@@ -158,4 +126,7 @@ async function loadGitHubActivity() {
         console.error(error);
     }
 }
-loadGitHubActivity();
+
+loadGitHubActivity().catch(function(error) {
+    console.error(error);
+});
