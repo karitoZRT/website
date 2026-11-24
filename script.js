@@ -104,7 +104,7 @@ async function loadGitHubActivity() {
             let link = document.createElement("a");
             link.href = commit.html_url;
             link.target = "_blank";
-            link.rel = "noopener noreferrer";
+            link.rel = "noOpener noReferrer";
             link.textContent = "View commit ↗";
 
             details.appendChild(message);
